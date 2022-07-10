@@ -13,5 +13,7 @@ namespace AluraflixAPI.ViewModels
         [Required(ErrorMessage = "O campo url é obrigatório.")]
         [Url(ErrorMessage = "O campo deve ser preenchido com uma Url válida.")]
         public string Url { get; set; }
+
+        public int IdCategoria { get; set; } = 1; // Valor default da categoria para caso não seja preenchida
     }
 }

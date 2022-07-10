@@ -10,5 +10,8 @@ namespace AluraflixAPI.Models
         public string Descricao { get; set; }
         public string Url { get; set; }
 
+        public int IdCategoria { get; set; }
+        public virtual Categoria Categoria { get; set; }
+
     }
 }

@@ -28,20 +28,12 @@ namespace AluraflixAPI.Services
         public ReadVideoViewModel? ConsultarVideoPorId(int id)
         {
             Video? videoEncontrado = _context.Videos.FirstOrDefault(video => video.Id == id);
-            if (videoEncontrado == null)
-            {
-                return null;
-            }
             return ConverterParaReadViewModel(videoEncontrado);
         }
 
         public List<ReadVideoViewModel>? ConsultarVideos()
         {
             List<Video> colecaoDeVideos = _context.Videos.ToList();
-            if (EstaVazioOuNulo(colecaoDeVideos))
-            {
-                return null;
-            }
             return ConverterParaReadViewModel(colecaoDeVideos);
         }
 
@@ -67,7 +59,7 @@ namespace AluraflixAPI.Services
             return Result.Ok();
         }
 
-        public bool EstaVazioOuNulo(List<Video> colecaoDeVideos)
+        private bool EstaVazioOuNulo(List<Video> colecaoDeVideos)
         {
             if (colecaoDeVideos == null || !colecaoDeVideos.Any())
             {
@@ -76,38 +68,47 @@ namespace AluraflixAPI.Services
             return false;
         }
 
-        public ReadVideoViewModel ConverterParaReadViewModel(Video video)
+        private ReadVideoViewModel? ConverterParaReadViewModel(Video video)
         {
+            if (video == null)
+            {
+                return null;
+            }
             return _mapper.Map<ReadVideoViewModel>(video);
         }
 
-        public List<ReadVideoViewModel> ConverterParaReadViewModel(List<Video> videos)
+        private List<ReadVideoViewModel>? ConverterParaReadViewModel(List<Video> videos)
         {
+            if (EstaVazioOuNulo(videos))
+            {
+                return null;
+            }
             return _mapper.Map<List<ReadVideoViewModel>>(videos);
         }
 
-        public Video ConverterParaVideoModel(CreateVideoViewModel videoViewModel)
+        private Video ConverterParaVideoModel(CreateVideoViewModel video)
         {
-            return _mapper.Map<Video>(videoViewModel);
+            return _mapper.Map<Video>(video);
         }
 
-        public void AdicionarVideoNoBD(Video video)
+        private void AdicionarVideoNoBD(Video video)
         {
             _context.Videos.Add(video);
             _context.SaveChanges();
         }
 
-        public void DeletarVideoDoBD(Video video)
+        private void DeletarVideoDoBD(Video video)
         {
             _context.Videos.Remove(video);
             _context.SaveChanges();
         }
 
-        public void AtualizarVideoNoBD([FromRoute] Video video, [FromBody] CreateVideoViewModel videoViewModel)
+        private void AtualizarVideoNoBD([FromRoute] Video videoAtual, [FromBody] CreateVideoViewModel videoNovo)
         {
-            video.Titulo = videoViewModel.Titulo;
-            video.Descricao = videoViewModel.Descricao;
-            video.Url = videoViewModel.Url;
+            videoAtual.Titulo = videoNovo.Titulo;
+            videoAtual.Descricao = videoNovo.Descricao;
+            videoAtual.Url = videoNovo.Url;
+            videoAtual.IdCategoria = videoNovo.IdCategoria;
             _context.SaveChanges();
         }
     }

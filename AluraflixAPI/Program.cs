@@ -12,6 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 var mySqlVersion = new MySqlServerVersion(new Version(8, 0, 29));
 
 builder.Services.AddDbContext<AppDbContext>(options => options
+        .UseLazyLoadingProxies()
         .UseMySql(connectionString, mySqlVersion)
         .LogTo(Console.WriteLine, LogLevel.Information)
         .EnableSensitiveDataLogging());
@@ -20,6 +21,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<VideoService, VideoService>();
+builder.Services.AddScoped<CategoriaService, CategoriaService>();
 
 var app = builder.Build();
 
