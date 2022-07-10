@@ -2,6 +2,8 @@
 using AluraflixAPI.Models;
 using AluraflixAPI.ViewModels;
 using AutoMapper;
+using FluentResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AluraflixAPI.Services
 {
@@ -25,20 +27,42 @@ namespace AluraflixAPI.Services
 
         public ReadCategoriaViewModel? ConsultarCategoriaPorId(int id)
         {
-            Categoria? categoriaencontrada = _context.Categorias.FirstOrDefault(categoria => categoria.Id == id);
-            return ConverterParaReadViewModel(categoriaencontrada);
+            Categoria? categoriaEncontrada = _context.Categorias.FirstOrDefault(categoria => categoria.Id == id);
+            return ConverterParaReadViewModel(categoriaEncontrada);
         }
 
-        public ReadVideosPorCategoriaViewModel? ConsultarFilmesPorCategoria(int id)
+        public ReadVideosPorCategoriaViewModel? ConsultarFilmesPorCategoriaId(int id)
         {
-            Categoria? categoriaencontrada = _context.Categorias.FirstOrDefault(categoria => categoria.Id == id);
-            return ConverterParaReadFilmesPorCategoriaViewModel(categoriaencontrada);
+            Categoria? categoriaEncontrada = _context.Categorias.FirstOrDefault(categoria => categoria.Id == id);
+            return ConverterParaReadFilmesPorCategoriaViewModel(categoriaEncontrada);
         }
 
         public List<ReadCategoriaViewModel>? ConsultarCategorias()
         {
             List<Categoria> colecaoDeCategorias = _context.Categorias.ToList();
             return ConverterParaReadViewModel(colecaoDeCategorias);
+        }
+
+        public Result RemoverCategoriaPorId(int id)
+        {
+            Categoria? categoriaEncontradaParaRemover = _context.Categorias.FirstOrDefault(categoria => categoria.Id == id);
+            if (categoriaEncontradaParaRemover == null)
+            {
+                return Result.Fail("Categoria não encontrada.");
+            }
+            DeletarCategoriaDoBD(categoriaEncontradaParaRemover);
+            return Result.Ok();
+        }
+
+        public ReadCategoriaViewModel? AtualizarCategoriaPorId(int id, CreateCategoriaViewModel categoriaComNovosDados)
+        {
+            Categoria? categoriaEncontrada = _context.Categorias.FirstOrDefault(categoria => categoria.Id == id);
+            if (categoriaEncontrada == null)
+            {
+                return null;
+            }            
+            AtualizarCategoriaNoBD(categoriaEncontrada, categoriaComNovosDados);
+            return ConverterParaReadViewModel(categoriaEncontrada);
         }
 
         private List<ReadCategoriaViewModel>? ConverterParaReadViewModel(List<Categoria> colecaoDeCategorias)
@@ -85,6 +109,19 @@ namespace AluraflixAPI.Services
         private void AdicionarCategoriaNoBD(Categoria categoria)
         {
             _context.Categorias.Add(categoria);
+            _context.SaveChanges();
+        }
+
+        private void AtualizarCategoriaNoBD(Categoria categoriaAtual, CreateCategoriaViewModel categoriaNova)
+        {
+            categoriaAtual.Titulo = categoriaNova.Titulo;
+            categoriaAtual.Cor = categoriaNova.Cor;
+            _context.SaveChanges();
+        }
+
+        private void DeletarCategoriaDoBD(Categoria categoriaEncontradaParaRemover)
+        {
+            _context.Categorias.Remove(categoriaEncontradaParaRemover);
             _context.SaveChanges();
         }
     }

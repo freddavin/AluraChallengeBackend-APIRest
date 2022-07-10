@@ -60,14 +60,14 @@ namespace AluraflixAPI.Controllers
         }
 
         [HttpPut("{Id}")]
-        public IActionResult AtualizarVideoPorId(int id, [FromBody] CreateVideoViewModel videoComNovosDados)
+        public IActionResult AtualizarVideoPorId([FromRoute] int id, [FromBody] CreateVideoViewModel videoComNovosDados)
         {
-            Result resultadoDaAtualizacao = _service.AtualizarVideoPorId(id, videoComNovosDados);
-            if (resultadoDaAtualizacao.IsFailed)
+            ReadVideoViewModel? videoAtualizado = _service.AtualizarVideoPorId(id, videoComNovosDados);
+            if (videoAtualizado == null)
             {
-                return NotFound(resultadoDaAtualizacao.Errors.First().Message);
+                return NotFound("Vídeo não encontrado.");
             }
-            return Ok("Vídeo atualizado com sucesso.");
+            return Ok(videoAtualizado);
         }
 
 

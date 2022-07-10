@@ -44,19 +44,19 @@ namespace AluraflixAPI.Services
             {
                 return Result.Fail("Vídeo não encontrado.");
             }
-            DeletarVideoDoBD(videoEncontradoParaRemover);
+            RemoverVideoDoBD(videoEncontradoParaRemover);
             return Result.Ok();
         }
         
-        public Result AtualizarVideoPorId(int id, CreateVideoViewModel videoComNovosDados)
+        public ReadVideoViewModel? AtualizarVideoPorId(int id, CreateVideoViewModel videoComNovosDados)
         {
-            Video? videoEncontradoParaAtualizar = _context.Videos.FirstOrDefault(video => video.Id == id);
-            if (videoEncontradoParaAtualizar == null)
+            Video? videoEncontrado = _context.Videos.FirstOrDefault(video => video.Id == id);
+            if (videoEncontrado == null)
             {
-                return Result.Fail("Vídeo não encontrado.");
+                return null;
             }
-            AtualizarVideoNoBD(videoEncontradoParaAtualizar, videoComNovosDados);
-            return Result.Ok();
+            AtualizarVideoNoBD(videoEncontrado, videoComNovosDados);
+            return ConverterParaReadViewModel(videoEncontrado);
         }
 
         private bool EstaVazioOuNulo(List<Video> colecaoDeVideos)
@@ -97,13 +97,13 @@ namespace AluraflixAPI.Services
             _context.SaveChanges();
         }
 
-        private void DeletarVideoDoBD(Video video)
+        private void RemoverVideoDoBD(Video video)
         {
             _context.Videos.Remove(video);
             _context.SaveChanges();
         }
 
-        private void AtualizarVideoNoBD([FromRoute] Video videoAtual, [FromBody] CreateVideoViewModel videoNovo)
+        private void AtualizarVideoNoBD(Video videoAtual, CreateVideoViewModel videoNovo)
         {
             videoAtual.Titulo = videoNovo.Titulo;
             videoAtual.Descricao = videoNovo.Descricao;

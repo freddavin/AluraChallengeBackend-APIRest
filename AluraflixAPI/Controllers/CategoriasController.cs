@@ -1,5 +1,6 @@
 ﻿using AluraflixAPI.Services;
 using AluraflixAPI.ViewModels;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AluraflixAPI.Controllers
@@ -37,7 +38,7 @@ namespace AluraflixAPI.Controllers
         [HttpGet("{Id}/videos")]
         public IActionResult ConsultarFilmesPorCategoria(int id)
         {
-            ReadVideosPorCategoriaViewModel? categoriaConsultada = _service.ConsultarFilmesPorCategoria(id);
+            ReadVideosPorCategoriaViewModel? categoriaConsultada = _service.ConsultarFilmesPorCategoriaId(id);
             if (categoriaConsultada == null)
             {
                 return NotFound("Categoria não encontrada.");
@@ -55,6 +56,29 @@ namespace AluraflixAPI.Controllers
             }
             return Ok(colecaoDeCategorias);
         }
+
+        [HttpDelete("{Id}")]
+        public IActionResult RemoverCategoriaPorId(int id)
+        {
+            Result resultadoDaRemocao = _service.RemoverCategoriaPorId(id);
+            if (resultadoDaRemocao.IsFailed)
+            {
+                return NotFound(resultadoDaRemocao.Errors.First().Message);
+            }
+            return Ok("Categoria deletada com sucesso.");
+        }
+
+        [HttpPut("{Id}")]
+        public IActionResult AtualizarCategoriaPorId([FromRoute] int id, [FromBody] CreateCategoriaViewModel categoriaComNovosDados)
+        {
+            ReadCategoriaViewModel? categoriaAtualizada = _service.AtualizarCategoriaPorId(id, categoriaComNovosDados);
+            if (categoriaAtualizada == null)
+            {
+                return NotFound("Categoria não encontrada.");
+            }
+            return Ok(categoriaAtualizada);
+        }
+
 
     }
 }
