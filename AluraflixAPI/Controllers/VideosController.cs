@@ -38,9 +38,9 @@ namespace AluraflixAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult RecuperarColecaoDeVideos()
+        public IActionResult ConsultarVideos()
         {
-            List<ReadVideoViewModel>? colecaoDeVideos = _service.RecuperarColecaoDeVideos();
+            List<ReadVideoViewModel>? colecaoDeVideos = _service.ConsultarVideos();
             if (colecaoDeVideos == null)
             {
                 return NotFound("Coleção nula ou sem vídeos cadastrados.");
