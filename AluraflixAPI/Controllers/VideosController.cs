@@ -1,7 +1,7 @@
 ﻿using AluraflixAPI.Contexts;
 using AluraflixAPI.Models;
+using AluraflixAPI.Services;
 using AluraflixAPI.ViewModels;
-using AutoMapper;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,98 +12,64 @@ namespace AluraflixAPI.Controllers
 
     public class VideosController : ControllerBase
     {
-        private AppDbContext _context;
-        private IMapper _mapper;
+        private VideoService _service;
 
-        public VideosController(AppDbContext context, IMapper mapper)
+        public VideosController(VideoService service)
         {
-            _context = context;
-            _mapper = mapper;
+            _service = service;
         }
 
         [HttpPost]
-        public IActionResult CadastrarVideo([FromBody] CreateVideoViewModel videoViewModel)
+        public IActionResult CadastrarVideo([FromBody] CreateVideoViewModel videoParaCadastrar)
         {
-            Video video = ConverterParaVideoModel(videoViewModel);
-            AdicionarVideoNoBD(video);
-            return CreatedAtAction(nameof(RecuperarVideo), new { video.Id }, video);
+            ReadVideoViewModel videoCadastrado = _service.CadastrarVideo(videoParaCadastrar);
+            return CreatedAtAction(nameof(ConsultarVideoPorId), new { videoCadastrado.Id }, videoCadastrado);
         }
 
         [HttpGet("{Id}")]
-        public IActionResult RecuperarVideo(int id)
+        public IActionResult ConsultarVideoPorId(int id)
         {
-            Result<Video> resultado = RecuperarVideoPorId(id);
-            if (resultado.IsFailed)
+            ReadVideoViewModel? videoConsultado = _service.ConsultarVideoPorId(id);
+            if (videoConsultado == null)
             {
-                return NotFound(resultado.Errors.FirstOrDefault().Message);
-            }            
-            ReadVideoViewModel videoViewModel = ConverterParaReadViewModel(resultado.Value);
-            return Ok(videoViewModel);
+                return NotFound("Vídeo não encontrado.");
+            }
+            return Ok(videoConsultado);
         }
 
         [HttpGet]
         public IActionResult RecuperarColecaoDeVideos()
         {
-            List<Video> colecaoDeVideosRecuperados = _context.Videos.ToList();
-            if (EstaVazioOuNulo(colecaoDeVideosRecuperados))
+            List<ReadVideoViewModel>? colecaoDeVideos = _service.RecuperarColecaoDeVideos();
+            if (colecaoDeVideos == null)
             {
                 return NotFound("Coleção nula ou sem vídeos cadastrados.");
             }
-            return Ok(colecaoDeVideosRecuperados);
+            return Ok(colecaoDeVideos);
         }
 
         [HttpDelete("{Id}")]
-        public IActionResult DeletarVideo(int id)
+        public IActionResult RemoverVideoPorId(int id)
         {
-            Result<Video> resultado = RecuperarVideoPorId(id);
-            if (resultado.IsFailed)
+            Result resultadoDaRemocao = _service.RemoverVideoPorId(id);
+            if (resultadoDaRemocao.IsFailed)
             {
-                return NotFound(resultado.Errors.FirstOrDefault().Message);
+                return NotFound(resultadoDaRemocao.Errors.First().Message);
             }
-            DeletarVideoDoBD(resultado.Value);
             return Ok("Vídeo deletado com sucesso.");
         }
 
-        public Result<Video> RecuperarVideoPorId(int id)
+        [HttpPut("{Id}")]
+        public IActionResult AtualizarVideoPorId(int id, [FromBody] CreateVideoViewModel videoComNovosDados)
         {
-            Video? videoRecuperado = _context.Videos.FirstOrDefault(video => video.Id == id);
-            if (videoRecuperado == null)
+            Result resultadoDaAtualizacao = _service.AtualizarVideoPorId(id, videoComNovosDados);
+            if (resultadoDaAtualizacao.IsFailed)
             {
-                return Result.Fail("Vídeo não encontrado.");
+                return NotFound(resultadoDaAtualizacao.Errors.First().Message);
             }
-            return Result.Ok(videoRecuperado);
+            return Ok("Vídeo atualizado com sucesso.");
         }
 
-        public bool EstaVazioOuNulo(IEnumerable<Video> colecaoDeVideos)
-        {
-            if (colecaoDeVideos == null || !colecaoDeVideos.Any())
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public ReadVideoViewModel ConverterParaReadViewModel(Video video)
-        {
-            return _mapper.Map<ReadVideoViewModel>(video);
-        }
-
-        public Video ConverterParaVideoModel(CreateVideoViewModel videoViewModel)
-        {
-            return _mapper.Map<Video>(videoViewModel);
-        }
-
-        public void AdicionarVideoNoBD(Video video)
-        {
-            _context.Videos.Add(video);
-            _context.SaveChanges();
-        }
-
-        public void DeletarVideoDoBD(Video video)
-        {
-            _context.Videos.Remove(video);
-            _context.SaveChanges();
-        }
 
     }
 }

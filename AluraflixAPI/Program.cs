@@ -1,4 +1,5 @@
 using AluraflixAPI.Contexts;
+using AluraflixAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<VideoService, VideoService>();
 
 var app = builder.Build();
 
