@@ -21,7 +21,7 @@ namespace AluraflixAPI.Services
         public ReadVideoViewModel CadastrarVideo(CreateVideoViewModel videoParaCadastrar)
         {
             Video video = ConverterParaVideoModel(videoParaCadastrar);
-            AdicionarVideoNoBD(video);            
+            AdicionarVideoNoBD(video);
             return ConverterParaReadViewModel(video);
         }
 
@@ -31,9 +31,16 @@ namespace AluraflixAPI.Services
             return ConverterParaReadViewModel(videoEncontrado);
         }
 
-        public List<ReadVideoViewModel>? ConsultarVideos()
+        public List<ReadVideoViewModel>? ConsultarVideos(string titulo)
         {
-            List<Video> colecaoDeVideos = _context.Videos.ToList();
+            List<Video> colecaoDeVideos;
+            if (titulo == null)
+            {
+                colecaoDeVideos = _context.Videos.ToList();
+            } else
+            {
+                colecaoDeVideos = _context.Videos.Where(video => video.Titulo.Contains(titulo)).ToList();
+            }
             return ConverterParaReadViewModel(colecaoDeVideos);
         }
 
@@ -47,7 +54,7 @@ namespace AluraflixAPI.Services
             RemoverVideoDoBD(videoEncontradoParaRemover);
             return Result.Ok();
         }
-        
+
         public ReadVideoViewModel? AtualizarVideoPorId(int id, CreateVideoViewModel videoComNovosDados)
         {
             Video? videoEncontrado = _context.Videos.FirstOrDefault(video => video.Id == id);
