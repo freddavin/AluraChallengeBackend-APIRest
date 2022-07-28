@@ -23,7 +23,7 @@ Os times de frontend e UI já estão trabalhando no layout e nas telas. Para o b
 3. Implementação de base de dados para persistência das informações;
 4. Serviço de autenticação para acesso às rotas `GET`, `POST`, `PUT` e `DELETE`.
 
-### :soon: Semana 2 - Implentação de nova feature:
+### :white_check_mark: Semana 2 - Implentação de nova feature:
 
 Depois de alguns testes com usuários, foi definido que a próxima feature a ser desenvolvida nesse projeto é a divisão dos vídeos por categoria, para melhorar a experiência de organização da lista de vídeos pelo usuário.
 
@@ -32,3 +32,9 @@ Dividimos a implementação dessa feat da seguinte forma:
 2. Rotas CRUD para `/categorias`;
 3. Incluir campo `categoriaId` no modelo `video`; 
 4. Escrever os testes necessários.
+
+### :soon: Semana 3 - Finalizando o projeto:
+
+Nesta semana, o desafio será complementar a API adicionando `paginação` nas requisições de vídeos e categorias. Além disso, foi solicitado para segurança dos recursos proporcionados pela API, adicionar um método de `autenticação`.
+
+Para finalizar, vamos realizar o `deploy` da API disponibilizando os recursos para todos.
