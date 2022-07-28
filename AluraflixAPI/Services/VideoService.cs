@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AluraflixAPI.Services
 {
-    public class VideoService
+    public class VideoService : IVideoService
     {
         private AppDbContext _context;
         private IMapper _mapper;

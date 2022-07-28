@@ -20,7 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<VideoService, VideoService>();
+builder.Services.AddScoped<IVideoService, VideoService>();
 builder.Services.AddScoped<CategoriaService, CategoriaService>();
 
 var app = builder.Build();
