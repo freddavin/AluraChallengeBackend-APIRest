@@ -12,7 +12,8 @@
     "AluraflixAPI": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:6000;http://localhost:6001",
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:9000;http://localhost:9001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

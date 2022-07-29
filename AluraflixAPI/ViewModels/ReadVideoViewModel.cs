@@ -1,4 +1,5 @@
 ﻿using AluraflixAPI.Models;
+using System.Text.Json.Serialization;
 
 namespace AluraflixAPI.ViewModels
 {
@@ -10,6 +11,6 @@ namespace AluraflixAPI.ViewModels
         public string Url { get; set; }
 
         //public int IdCategoria { get; set; }
-        public Categoria Categoria { get; set; }
+        public virtual Categoria Categoria { get; set; }
     }
 }

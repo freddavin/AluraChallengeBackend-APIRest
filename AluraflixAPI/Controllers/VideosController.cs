@@ -26,7 +26,7 @@ namespace AluraflixAPI.Controllers
             return CreatedAtAction(nameof(ConsultarVideoPorId), new { videoCadastrado.Id }, videoCadastrado);
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{id}")]
         public IActionResult ConsultarVideoPorId(int id)
         {
             ReadVideoViewModel? videoConsultado = _service.ConsultarVideoPorId(id);
@@ -48,7 +48,7 @@ namespace AluraflixAPI.Controllers
             return Ok(colecaoDeVideos);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpDelete("{id}")]
         public IActionResult RemoverVideoPorId(int id)
         {
             Result resultadoDaRemocao = _service.RemoverVideoPorId(id);
@@ -59,7 +59,7 @@ namespace AluraflixAPI.Controllers
             return Ok("Vídeo deletado com sucesso.");
         }
 
-        [HttpPut("{Id}")]
+        [HttpPut("{id}")]
         public IActionResult AtualizarVideoPorId([FromRoute] int id, [FromBody] CreateVideoViewModel videoComNovosDados)
         {
             ReadVideoViewModel? videoAtualizado = _service.AtualizarVideoPorId(id, videoComNovosDados);

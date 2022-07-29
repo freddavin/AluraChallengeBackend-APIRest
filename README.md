@@ -3,14 +3,15 @@ API em desenvolvimento para a **[Alura Challenge de BackEnd](https://www.alura.c
 
 ## Tecnologias Utilizadas
 - C#
-- ASP .NET Core
+- ASP.NET Core
 - MySQL
-- Postman para testes API
 
 ### Bibliotecas
 - AutoMapper
 - FluentResults
 - Entity Framework Core
+- xUnit
+- Swagger
 
 ## Desafios
 ### :white_check_mark: Semana 1 - Início do projeto:
