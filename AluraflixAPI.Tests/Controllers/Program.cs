@@ -22,18 +22,14 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IVideoService, VideoService>();
-builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<CategoriaService, CategoriaService>();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty;
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

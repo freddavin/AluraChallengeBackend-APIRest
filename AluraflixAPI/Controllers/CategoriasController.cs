@@ -10,9 +10,9 @@ namespace AluraflixAPI.Controllers
 
     public class CategoriasController : ControllerBase
     {
-        private CategoriaService _service;
+        private ICategoriaService _service;
 
-        public CategoriasController(CategoriaService service)
+        public CategoriasController(ICategoriaService service)
         {
             _service = service;
         }
@@ -24,7 +24,7 @@ namespace AluraflixAPI.Controllers
             return CreatedAtAction(nameof(ConsultarCategoriaPorId), new { categoriaCadastrada.Id }, categoriaCadastrada);
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{id}")]
         public IActionResult ConsultarCategoriaPorId(int id)
         {
             ReadCategoriaViewModel? categoriaConsultada = _service.ConsultarCategoriaPorId(id);
@@ -35,7 +35,7 @@ namespace AluraflixAPI.Controllers
             return Ok(categoriaConsultada);
         }
 
-        [HttpGet("{Id}/videos")]
+        [HttpGet("{id}/videos")]
         public IActionResult ConsultarFilmesPorCategoria(int id)
         {
             ReadVideosPorCategoriaViewModel? categoriaConsultada = _service.ConsultarFilmesPorCategoriaId(id);
@@ -47,9 +47,9 @@ namespace AluraflixAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult ConsultarCategorias()
+        public IActionResult ConsultarCategorias([FromQuery] int pagina = 0)
         {
-            List<ReadCategoriaViewModel> colecaoDeCategorias = _service.ConsultarCategorias();
+            List<ReadCategoriaViewModel> colecaoDeCategorias = _service.ConsultarCategorias(pagina);
             if (colecaoDeCategorias == null)
             {
                 return NotFound("Coleção nula ou sem categorias cadastradas.");
@@ -57,7 +57,7 @@ namespace AluraflixAPI.Controllers
             return Ok(colecaoDeCategorias);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpDelete("{id}")]
         public IActionResult RemoverCategoriaPorId(int id)
         {
             Result resultadoDaRemocao = _service.RemoverCategoriaPorId(id);
@@ -68,7 +68,7 @@ namespace AluraflixAPI.Controllers
             return Ok("Categoria deletada com sucesso.");
         }
 
-        [HttpPut("{Id}")]
+        [HttpPut("{id}")]
         public IActionResult AtualizarCategoriaPorId([FromRoute] int id, [FromBody] CreateCategoriaViewModel categoriaComNovosDados)
         {
             ReadCategoriaViewModel? categoriaAtualizada = _service.AtualizarCategoriaPorId(id, categoriaComNovosDados);

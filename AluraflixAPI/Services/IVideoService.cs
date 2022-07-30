@@ -7,7 +7,7 @@ namespace AluraflixAPI.Services
     {
         public ReadVideoViewModel CadastrarVideo(CreateVideoViewModel videoParaCadastrar);
         public ReadVideoViewModel? ConsultarVideoPorId(int id);
-        public List<ReadVideoViewModel>? ConsultarVideos(string titulo);
+        public List<ReadVideoViewModel>? ConsultarVideos(string titulo, int pagina);
         public Result RemoverVideoPorId(int id);
         public ReadVideoViewModel? AtualizarVideoPorId(int id, CreateVideoViewModel videoComNovosDados);
 

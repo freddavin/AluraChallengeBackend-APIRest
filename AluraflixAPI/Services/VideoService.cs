@@ -22,6 +22,7 @@ namespace AluraflixAPI.Services
         {
             Video video = ConverterParaVideoModel(videoParaCadastrar);
             AdicionarVideoNoBD(video);
+            _context.Entry(video).Reference(v => v.Categoria).Load();
             return ConverterParaReadViewModel(video);
         }
 
@@ -31,15 +32,16 @@ namespace AluraflixAPI.Services
             return ConverterParaReadViewModel(videoEncontrado);
         }
 
-        public List<ReadVideoViewModel>? ConsultarVideos(string titulo)
+        public List<ReadVideoViewModel>? ConsultarVideos(string titulo, int pagina)
         {
-            List<Video> colecaoDeVideos;
-            if (titulo == null)
+            List<Video> colecaoDeVideos = _context.Videos.ToList();
+            if (titulo != null)
             {
-                colecaoDeVideos = _context.Videos.ToList();
-            } else
+                colecaoDeVideos = FiltrarColecaoDeVideos(titulo);
+            }
+            if (pagina > 0)
             {
-                colecaoDeVideos = _context.Videos.Where(video => video.Titulo.Contains(titulo)).ToList();
+                colecaoDeVideos = ConfigurarPaginacaoDeVideos(colecaoDeVideos, pagina);
             }
             return ConverterParaReadViewModel(colecaoDeVideos);
         }
@@ -64,6 +66,18 @@ namespace AluraflixAPI.Services
             }
             AtualizarVideoNoBD(videoEncontrado, videoComNovosDados);
             return ConverterParaReadViewModel(videoEncontrado);
+        }
+
+        public List<Video> ConfigurarPaginacaoDeVideos(List<Video> colecaoDeVideos, int pagina)
+        {
+            int inicioPagina = (pagina - 1) * 5;
+            int quantidadeVideos = colecaoDeVideos.Count() - inicioPagina < 5 ? colecaoDeVideos.Count() - 5 : 5;
+            return colecaoDeVideos.GetRange(inicioPagina, quantidadeVideos);
+        }
+
+        public List<Video> FiltrarColecaoDeVideos(string titulo)
+        {
+            return _context.Videos.Where(video => video.Titulo.Contains(titulo)).ToList();
         }
 
         private bool EstaVazioOuNulo(List<Video> colecaoDeVideos)

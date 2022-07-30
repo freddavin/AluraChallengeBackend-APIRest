@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AluraflixAPI.Services
 {
-    public class CategoriaService
+    public class CategoriaService : ICategoriaService
     {
         private AppDbContext _context;
         private IMapper _mapper;
@@ -37,9 +37,13 @@ namespace AluraflixAPI.Services
             return ConverterParaReadFilmesPorCategoriaViewModel(categoriaEncontrada);
         }
 
-        public List<ReadCategoriaViewModel>? ConsultarCategorias()
+        public List<ReadCategoriaViewModel>? ConsultarCategorias(int pagina)
         {
             List<Categoria> colecaoDeCategorias = _context.Categorias.ToList();
+            if (pagina > 0)
+            {
+                colecaoDeCategorias = ConfigurarPaginacaoDeCategorias(colecaoDeCategorias, pagina);
+            }
             return ConverterParaReadViewModel(colecaoDeCategorias);
         }
 
@@ -63,6 +67,13 @@ namespace AluraflixAPI.Services
             }            
             AtualizarCategoriaNoBD(categoriaEncontrada, categoriaComNovosDados);
             return ConverterParaReadViewModel(categoriaEncontrada);
+        }
+
+        private List<Categoria> ConfigurarPaginacaoDeCategorias(List<Categoria> colecaoDeCategorias, int pagina)
+        {
+            int inicioPagina = (pagina - 1) * 5;
+            int quantidadeVideos = colecaoDeCategorias.Count() - inicioPagina < 5 ? colecaoDeCategorias.Count() - 5 : 5;
+            return colecaoDeCategorias.GetRange(inicioPagina, quantidadeVideos);
         }
 
         private List<ReadCategoriaViewModel>? ConverterParaReadViewModel(List<Categoria> colecaoDeCategorias)
