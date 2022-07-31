@@ -3,12 +3,14 @@ using AluraflixAPI.Models;
 using AluraflixAPI.Services;
 using AluraflixAPI.ViewModels;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AluraflixAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
 
     public class VideosController : ControllerBase
     {
@@ -41,6 +43,18 @@ namespace AluraflixAPI.Controllers
         public IActionResult ConsultarVideos([FromQuery] string? titulo = null, int pagina = 0)
         {
             List<ReadVideoViewModel>? colecaoDeVideos = _service.ConsultarVideos(titulo, pagina);
+            if (colecaoDeVideos == null)
+            {
+                return NotFound("Coleção nula ou sem vídeos cadastrados.");
+            }
+            return Ok(colecaoDeVideos);
+        }
+
+        [HttpGet("free")]
+        [AllowAnonymous]
+        public IActionResult ConsultarVideosFree()
+        {
+            List<ReadVideoViewModel>? colecaoDeVideos = _service.ConsultarVideos(null, 1);
             if (colecaoDeVideos == null)
             {
                 return NotFound("Coleção nula ou sem vídeos cadastrados.");

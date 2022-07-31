@@ -130,7 +130,7 @@ namespace AluraflixAPI.Tests.Controllers
 
             var mockService = new Mock<IVideoService>();
             var controller = new VideosController(mockService.Object);
-            mockService.Setup(s => s.ConsultarVideos("C#"))
+            mockService.Setup(s => s.ConsultarVideos("C#", 0))
                 .Returns(colecaoDeVideos);
 
             // Act
